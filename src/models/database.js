@@ -16,11 +16,11 @@ class Database {
       // On Vercel, DATABASE_URL is required - SQLite won't work
       if (process.env.VERCEL) {
         throw new Error(
-          'DATABASE_URL environment variable is required for Vercel deployment.\n' +
-          'SQLite is not supported on Vercel due to read-only filesystem.\n' +
-          'Please set up a PostgreSQL database (Vercel Postgres, Neon, or Supabase)\n' +
-          'and add the DATABASE_URL to your environment variables.\n' +
-          'See VERCEL_DEPLOYMENT.md for detailed instructions.'
+          `DATABASE_URL environment variable is required for Vercel deployment.
+SQLite is not supported on Vercel due to read-only filesystem.
+Please set up a PostgreSQL database (Vercel Postgres, Neon, or Supabase)
+and add the DATABASE_URL to your environment variables.
+See VERCEL_DEPLOYMENT.md for detailed instructions.`
         );
       }
       console.log('Using SQLite database');
