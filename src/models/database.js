@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 
 // Database adapter that works with both SQLite and PostgreSQL
 class Database {
@@ -217,26 +218,45 @@ class Database {
 
   async createDefaultAdmin() {
     try {
-      const adminExists = await this.get('SELECT id FROM users WHERE role = $1', ['admin']);
+      const adminExists = await this.get('SELECT id FROM users WHERE role = ?', ['admin']);
       if (!adminExists) {
-        // Generate a random password for the default admin
-        const crypto = require('crypto');
-        const randomPassword = crypto.randomBytes(16).toString('hex');
-        const hashedPassword = await bcrypt.hash(randomPassword, 10);
+        // Check if admin credentials are provided via environment variables
+        const adminEmail = process.env.ADMIN_EMAIL || 'admin@canaryfilms.org';
+        const adminPassword = process.env.ADMIN_PASSWORD;
+        
+        let password;
+        let hashedPassword;
+        
+        if (adminPassword) {
+          // Use the password from environment variable
+          password = adminPassword;
+          hashedPassword = await bcrypt.hash(adminPassword, 10);
+          console.log('\n╔═══════════════════════════════════════════════════════╗');
+          console.log('║       ADMIN ACCOUNT CREATED                          ║');
+          console.log('╠═══════════════════════════════════════════════════════╣');
+          console.log(`║  Email:    ${adminEmail.padEnd(41, ' ')}║`);
+          console.log('║  Password: (configured via environment variable)     ║');
+          console.log('╚═══════════════════════════════════════════════════════╝\n');
+        } else {
+          // Generate a random password for the default admin
+          password = crypto.randomBytes(16).toString('hex');
+          hashedPassword = await bcrypt.hash(password, 10);
+          console.log('\n╔═══════════════════════════════════════════════════════╗');
+          console.log('║       DEFAULT ADMIN ACCOUNT CREATED                  ║');
+          console.log('╠═══════════════════════════════════════════════════════╣');
+          console.log(`║  Email:    ${adminEmail.padEnd(41, ' ')}║`);
+          console.log(`║  Password: ${password.padEnd(41, ' ')}║`);
+          console.log('╠═══════════════════════════════════════════════════════╣');
+          console.log('║  ⚠️  SAVE THIS PASSWORD - IT WILL NOT BE SHOWN AGAIN  ║');
+          console.log('║  ⚠️  CHANGE THIS PASSWORD IMMEDIATELY AFTER LOGIN    ║');
+          console.log('║  ⚠️  CLEAR YOUR TERMINAL/LOGS AFTER SAVING PASSWORD  ║');
+          console.log('╚═══════════════════════════════════════════════════════╝\n');
+        }
+        
         await this.run(
-          'INSERT INTO users (email, password_hash, name, role, is_approved) VALUES ($1, $2, $3, $4, $5)',
-          ['admin@canaryfilms.org', hashedPassword, 'Admin', 'admin', 1]
+          'INSERT INTO users (email, password_hash, name, role, is_approved) VALUES (?, ?, ?, ?, ?)',
+          [adminEmail, hashedPassword, 'Admin', 'admin', 1]
         );
-        console.log('\n╔═══════════════════════════════════════════════════════╗');
-        console.log('║       DEFAULT ADMIN ACCOUNT CREATED                  ║');
-        console.log('╠═══════════════════════════════════════════════════════╣');
-        console.log('║  Email:    admin@canaryfilms.org                     ║');
-        console.log(`║  Password: ${randomPassword.padEnd(41, ' ')}║`);
-        console.log('╠═══════════════════════════════════════════════════════╣');
-        console.log('║  ⚠️  SAVE THIS PASSWORD - IT WILL NOT BE SHOWN AGAIN  ║');
-        console.log('║  ⚠️  CHANGE THIS PASSWORD IMMEDIATELY AFTER LOGIN    ║');
-        console.log('║  ⚠️  CLEAR YOUR TERMINAL/LOGS AFTER SAVING PASSWORD  ║');
-        console.log('╚═══════════════════════════════════════════════════════╝\n');
       }
     } catch (err) {
       console.error('Error creating default admin:', err);
@@ -246,11 +266,9 @@ class Database {
   // Unified query methods that work with both databases
   async run(sql, params = []) {
     if (this.dbType === 'postgres') {
-      // Convert SQLite $1, $2 style to PostgreSQL style if needed
-      const pgSql = sql.replace(/\?/g, () => {
-        const index = (sql.match(/\?/g) || []).indexOf('?') + 1;
-        return `$${index}`;
-      });
+      // Convert ? placeholders to $1, $2, etc. for PostgreSQL
+      let paramIndex = 1;
+      const pgSql = sql.replace(/\?/g, () => `$${paramIndex++}`);
       const result = await this.db.query(pgSql, params);
       return { lastID: result.rows[0]?.id, changes: result.rowCount };
     } else {

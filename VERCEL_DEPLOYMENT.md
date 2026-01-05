@@ -83,6 +83,20 @@ Generate SESSION_SECRET:
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
+### Admin Account Configuration (Recommended)
+
+To avoid losing admin credentials in logs, set these environment variables:
+
+```
+ADMIN_EMAIL=admin@yourcompany.com
+ADMIN_PASSWORD=your-secure-admin-password
+```
+
+**⚠️ Important for Vercel Deployments:**
+- Without these variables, a random password is generated and shown in deployment logs
+- Deployment logs may not persist, making password recovery difficult
+- Setting these variables ensures consistent, known admin credentials
+
 ### OAuth Configuration (Optional)
 
 #### Hack Club OAuth
@@ -104,6 +118,8 @@ GOOGLE_CALLBACK_URL=https://your-app.vercel.app/auth/google/callback
 ```
 NODE_ENV=production
 BASE_URL=https://your-app.vercel.app
+ADMIN_EMAIL=admin@yourcompany.com
+ADMIN_PASSWORD=your-secure-admin-password
 ```
 
 ## Step 4: Update OAuth Redirect URIs
@@ -129,12 +145,22 @@ The application will automatically create tables on first run when it detects Po
 
 Your application will be available at: `https://your-app.vercel.app`
 
-The default admin account will be created on first run. Check the deployment logs for the credentials:
+### Admin Account
+
+**If you set ADMIN_EMAIL and ADMIN_PASSWORD environment variables:**
+- Login with those credentials immediately
+- No need to check deployment logs
+
+**If you did NOT set admin environment variables:**
+- The default admin account will be created on first run
+- Check the deployment logs in Vercel for the credentials:
 
 ```
 Admin: admin@canaryfilms.org
 Password: [shown in logs - save it!]
 ```
+
+⚠️ **Note:** Deployment logs may not persist forever, so it's highly recommended to set `ADMIN_EMAIL` and `ADMIN_PASSWORD` environment variables before deployment.
 
 ## Custom Domain
 
