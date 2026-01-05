@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal - Canary Films Members Portal</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include('../partials/header') %>
+  
+  <main class="container" style="padding: 2rem 20px;">
+    <h1>Welcome, <%= user.name %>! 🎬</h1>
+    
+    <div class="grid grid-2 mt-3">
+      <div class="card">
+        <h2>📅 Your Upcoming Shoots</h2>
+        <% if (mySchedules.length > 0) { %>
+          <% mySchedules.forEach(schedule => { %>
+            <div style="border-left: 4px solid var(--primary-color); padding-left: 1rem; margin: 1rem 0;">
+              <strong><%= new Date(schedule.date).toLocaleDateString() %> at <%= schedule.time %></strong><br>
+              <% if (schedule.character_name) { %>
+                Character: <%= schedule.character_name %><br>
+              <% } %>
+              <% if (schedule.location) { %>
+                Location: <%= schedule.location %><br>
+              <% } %>
+              <% if (schedule.notes) { %>
+                <small><%= schedule.notes %></small>
+              <% } %>
+            </div>
+          <% }); %>
+        <% } else { %>
+          <p>No upcoming shoots scheduled.</p>
+        <% } %>
+        <a href="/portal/schedules" class="btn btn-secondary mt-2">View All Schedules</a>
+      </div>
+
+      <div class="card">
+        <h2>📝 Quick Actions</h2>
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+          <a href="/portal/lines" class="btn btn-primary">View Lines to Learn</a>
+          <a href="/portal/scripts" class="btn btn-primary">Browse Scripts</a>
+          <a href="/portal/documents" class="btn btn-primary">Planning Documents</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mt-3">
+      <h2>📢 Recent Activity</h2>
+      <% if (schedules.length > 0) { %>
+        <p>There are <%= schedules.length %> upcoming shoot schedules.</p>
+      <% } else { %>
+        <p>No recent activity.</p>
+      <% } %>
+    </div>
+
+    <div class="card mt-3 text-center">
+      <a href="https://www.canaryfilms.org/" target="_blank">← Back to Canary Films</a>
+    </div>
+  </main>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>

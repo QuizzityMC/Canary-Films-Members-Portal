@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shoot Schedules - Canary Films Members Portal</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include('../partials/header') %>
+  
+  <main class="container" style="padding: 2rem 20px;">
+    <h1>📅 Shoot Schedules</h1>
+    
+    <div class="card mt-3">
+      <% if (schedules.length > 0) { %>
+        <% schedules.forEach(schedule => { %>
+          <div class="card">
+            <h3><%= new Date(schedule.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %></h3>
+            <p><strong>Time:</strong> <%= schedule.time %></p>
+            <% if (schedule.location) { %>
+              <p><strong>Location:</strong> <%= schedule.location %></p>
+            <% } %>
+            <% if (schedule.actors) { %>
+              <p><strong>Cast:</strong> <%= schedule.actors %></p>
+            <% } %>
+            <% if (schedule.notes) { %>
+              <p><strong>Notes:</strong> <%= schedule.notes %></p>
+            <% } %>
+          </div>
+        <% }); %>
+      <% } else { %>
+        <p>No shoot schedules available.</p>
+      <% } %>
+    </div>
+
+    <div class="card mt-3 text-center">
+      <a href="/portal" class="btn btn-secondary">← Back to Portal</a>
+      <a href="https://www.canaryfilms.org/" target="_blank" class="btn btn-secondary">Canary Films</a>
+    </div>
+  </main>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>

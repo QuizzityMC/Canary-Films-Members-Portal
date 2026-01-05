@@ -1,0 +1,21 @@
+[Unit]
+Description=Canary Films Members Portal
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/opt/canary-films-portal
+ExecStart=/usr/bin/node src/server.js
+Restart=on-failure
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=canary-portal
+
+# Environment variables
+Environment=NODE_ENV=production
+EnvironmentFile=/opt/canary-films-portal/.env
+
+[Install]
+WantedBy=multi-user.target

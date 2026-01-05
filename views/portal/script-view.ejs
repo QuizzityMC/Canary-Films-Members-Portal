@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= script.title %> - Canary Films Members Portal</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include('../partials/header') %>
+  
+  <main class="container" style="padding: 2rem 20px;">
+    <h1><%= script.title %></h1>
+    
+    <div class="card mt-3">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <div>
+          <p><strong>Version:</strong> <%= script.version %></p>
+          <p><strong>Last Updated:</strong> <%= new Date(script.updated_at).toLocaleDateString() %></p>
+        </div>
+      </div>
+
+      <div class="script-content"><%= script.content %></div>
+    </div>
+
+    <div class="card mt-3 text-center">
+      <a href="/portal/scripts" class="btn btn-secondary">← Back to Scripts</a>
+      <a href="/portal" class="btn btn-secondary">Portal Home</a>
+      <a href="https://www.canaryfilms.org/" target="_blank" class="btn btn-secondary">Canary Films</a>
+    </div>
+  </main>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>
