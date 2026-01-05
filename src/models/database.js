@@ -65,9 +65,9 @@ class Database {
       dbPath = process.env.DB_PATH || path.join(__dirname, '../../data/portal.db');
     }
     
-    // Create data directory if it doesn't exist
+    // Create data directory if it doesn't exist (skip for /tmp which always exists)
     const dataDir = path.dirname(dbPath);
-    if (!fs.existsSync(dataDir)) {
+    if (dataDir !== '/tmp' && !fs.existsSync(dataDir)) {
       fs.mkdirSync(dataDir, { recursive: true });
     }
 
