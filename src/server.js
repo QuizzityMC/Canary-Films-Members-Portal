@@ -9,6 +9,7 @@ const passport = require('./config/passport');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const flash = require('connect-flash');
+const rateLimit = require('express-rate-limit');
 const db = require('./models/database');
 
 // Initialize Express app
@@ -17,6 +18,9 @@ const app = express();
 // View engine setup
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '../views'));
+
+// Trust proxy for rate limiting behind reverse proxies
+app.set('trust proxy', 1);
 
 // Middleware
 app.use(express.static(path.join(__dirname, '../public')));
@@ -48,6 +52,34 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Rate limiting for authentication routes
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // Limit each IP to 5 requests per windowMs
+  message: 'Too many login attempts, please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Rate limiting for admin routes
+const adminLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 50, // Limit each IP to 50 requests per windowMs
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Rate limiting for general routes
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Apply general rate limiting to all routes
+app.use(generalLimiter);
+
 // Make user available in all templates
 app.use((req, res, next) => {
   res.locals.user = req.user;
@@ -60,8 +92,8 @@ app.get('/', (req, res) => {
   res.render('index', { user: req.user });
 });
 
-app.use('/auth', require('./routes/auth'));
-app.use('/admin', require('./routes/admin'));
+app.use('/auth', authLimiter, require('./routes/auth'));
+app.use('/admin', adminLimiter, require('./routes/admin'));
 app.use('/portal', require('./routes/portal'));
 
 // 404 handler
