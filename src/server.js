@@ -29,14 +29,22 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 // Session configuration
-if (!process.env.SESSION_SECRET) {
-  console.error('ERROR: SESSION_SECRET environment variable must be set!');
-  console.error('Generate a random secret: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"');
-  process.exit(1);
+let sessionSecret = process.env.SESSION_SECRET;
+if (!sessionSecret) {
+  // Generate a random session secret if not provided
+  const crypto = require('crypto');
+  sessionSecret = crypto.randomBytes(32).toString('hex');
+  
+  console.warn('WARNING: SESSION_SECRET environment variable is not set!');
+  console.warn('Using a randomly generated session secret. This means:');
+  console.warn('  - Users will be logged out when the server restarts');
+  console.warn('  - Sessions will not persist across multiple instances');
+  console.warn('For production, set SESSION_SECRET in your environment variables.');
+  console.warn('Generate a permanent secret: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"');
 }
 
 app.use(session({
-  secret: process.env.SESSION_SECRET,
+  secret: sessionSecret,
   resave: false,
   saveUninitialized: false,
   cookie: {
