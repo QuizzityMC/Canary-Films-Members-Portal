@@ -14,9 +14,9 @@
       <div class="card">
         <h2 class="text-center">Sign In</h2>
         
-        <% if (error || (message && message.length > 0)) { %>
+        <% if (error || (Array.isArray(message) && message.length > 0)) { %>
           <div class="alert alert-error">
-            <% if (message && message.length > 0) { %>
+            <% if (Array.isArray(message) && message.length > 0) { %>
               <%= message[0] %>
             <% } else { %>
               Invalid credentials or account not approved. Please contact an administrator.
