@@ -58,7 +58,19 @@ The portal will be available at:
 
 ### Default Admin Account
 
-On first run, a default admin account is created with a **randomly generated password**:
+On first run, a default admin account is created. You can configure it using environment variables, or it will use a randomly generated password:
+
+**Option 1: Set Admin Credentials via Environment Variables (Recommended for Production)**
+
+```bash
+# In your .env file
+ADMIN_EMAIL=admin@yourcompany.com
+ADMIN_PASSWORD=your-secure-password-here
+```
+
+**Option 2: Auto-Generated Password**
+
+If no environment variables are set, a random password is generated:
 
 ```
 Email: admin@canaryfilms.org
@@ -66,9 +78,10 @@ Password: (displayed in console on first startup)
 ```
 
 **⚠️ IMPORTANT:** 
-- Save the password shown in the console during first startup
+- If using auto-generated password, save it from the console during first startup
 - It will NOT be shown again
 - Change this password immediately after first login
+- For production deployments (especially Vercel), use environment variables
 
 ## 📚 Documentation
 
@@ -94,7 +107,8 @@ Password: (displayed in console on first startup)
 See `.env.example` for all available configuration options:
 
 - `HTTP_PORT` / `HTTPS_PORT` - Server ports (default: 9811/9812)
-- `SESSION_SECRET` - Secure session key
+- `SESSION_SECRET` - Secure session key (required)
+- `ADMIN_EMAIL` / `ADMIN_PASSWORD` - Admin credentials (optional, recommended for production)
 - `HACKCLUB_CLIENT_ID` / `HACKCLUB_CLIENT_SECRET` - Hack Club OAuth
 - `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` - Google OAuth
 - `SSL_KEY_PATH` / `SSL_CERT_PATH` - SSL certificate paths
