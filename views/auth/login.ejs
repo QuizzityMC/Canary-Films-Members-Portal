@@ -14,9 +14,14 @@
       <div class="card">
         <h2 class="text-center">Sign In</h2>
         
-        <% if (error) { %>
+        <% const hasMessages = Array.isArray(message) && message.length > 0; %>
+        <% if (error || hasMessages) { %>
           <div class="alert alert-error">
-            Invalid credentials or account not approved. Please contact an administrator.
+            <% if (hasMessages) { %>
+              <%= message[0] %>
+            <% } else { %>
+              Invalid credentials or account not approved. Please contact an administrator.
+            <% } %>
           </div>
         <% } %>
 

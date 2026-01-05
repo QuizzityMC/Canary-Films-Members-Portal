@@ -13,6 +13,13 @@ class Database {
       console.log('Using PostgreSQL database');
       return this.initPostgres();
     } else {
+      // On Vercel without DATABASE_URL, use /tmp (ephemeral storage)
+      if (process.env.VERCEL) {
+        console.warn('⚠️  WARNING: Using SQLite in /tmp directory on Vercel');
+        console.warn('⚠️  Data will NOT persist across deployments or function restarts');
+        console.warn('⚠️  For production, set up PostgreSQL and configure DATABASE_URL');
+        console.warn('⚠️  See VERCEL_DEPLOYMENT.md for instructions');
+      }
       console.log('Using SQLite database');
       return this.initSQLite();
     }
@@ -49,11 +56,18 @@ class Database {
     const fs = require('fs');
     
     this.dbType = 'sqlite';
-    const dbPath = process.env.DB_PATH || path.join(__dirname, '../../data/portal.db');
     
-    // Create data directory if it doesn't exist
+    // Use /tmp directory on Vercel (ephemeral), otherwise use data directory
+    let dbPath;
+    if (process.env.VERCEL && !process.env.DB_PATH) {
+      dbPath = '/tmp/portal.db';
+    } else {
+      dbPath = process.env.DB_PATH || path.join(__dirname, '../../data/portal.db');
+    }
+    
+    // Create data directory if it doesn't exist (skip for /tmp which always exists)
     const dataDir = path.dirname(dbPath);
-    if (!fs.existsSync(dataDir)) {
+    if (dataDir !== '/tmp' && !fs.existsSync(dataDir)) {
       fs.mkdirSync(dataDir, { recursive: true });
     }
 
