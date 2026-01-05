@@ -1,6 +1,6 @@
 # Canary Films Members Portal
 
-A comprehensive members portal for the Canary Films Film Studio, featuring multiple authentication methods, shoot scheduling, script management, and production planning tools. Designed to be easily self-hosted on any Linux server.
+A comprehensive members portal for the Canary Films Film Studio, featuring multiple authentication methods, shoot scheduling, script management, and production planning tools. Can be easily self-hosted on Linux servers or deployed to Vercel.
 
 ## 🎬 Features
 
@@ -72,7 +72,16 @@ Password: (displayed in console on first startup)
 
 ## 📚 Documentation
 
-- [Deployment Guide](DEPLOYMENT.md) - Complete deployment instructions
+### Deployment Options
+
+**Option 1: Vercel (Serverless)**
+- [Vercel Deployment Guide](VERCEL_DEPLOYMENT.md) - Deploy to Vercel in minutes
+- Automatic HTTPS
+- Zero server management
+- Free tier available
+
+**Option 2: Traditional Server**
+- [Linux Server Deployment Guide](DEPLOYMENT.md) - Self-host on your own server
 - DNS configuration
 - SSL certificate setup
 - OAuth application configuration

@@ -110,14 +110,22 @@ async function startServer() {
     await db.init();
     console.log('Database initialized');
 
-    // Create data directory if it doesn't exist
-    const dataDir = path.join(__dirname, '../data');
-    if (!fs.existsSync(dataDir)) {
-      fs.mkdirSync(dataDir, { recursive: true });
+    // Only create data directory if not on Vercel
+    if (!process.env.VERCEL) {
+      const dataDir = path.join(__dirname, '../data');
+      if (!fs.existsSync(dataDir)) {
+        fs.mkdirSync(dataDir, { recursive: true });
+      }
     }
 
-    // HTTP Server
-    const httpPort = process.env.HTTP_PORT || 9811;
+    // For Vercel serverless, don't start HTTP/HTTPS servers
+    if (process.env.VERCEL) {
+      console.log('Running in Vercel serverless environment');
+      return;
+    }
+
+    // HTTP Server (traditional deployment)
+    const httpPort = process.env.HTTP_PORT || process.env.PORT || 9811;
     const httpServer = http.createServer(app);
     httpServer.listen(httpPort, () => {
       console.log(`HTTP Server running on port ${httpPort}`);
@@ -139,10 +147,12 @@ async function startServer() {
         console.log(`HTTPS Server running on port ${httpsPort}`);
       });
     } else {
-      console.log('SSL certificates not found. HTTPS server not started.');
-      console.log('Place your SSL certificates at:');
-      console.log(`  - ${sslKeyPath}`);
-      console.log(`  - ${sslCertPath}`);
+      if (!process.env.VERCEL) {
+        console.log('SSL certificates not found. HTTPS server not started.');
+        console.log('Place your SSL certificates at:');
+        console.log(`  - ${sslKeyPath}`);
+        console.log(`  - ${sslCertPath}`);
+      }
     }
 
   } catch (err) {
