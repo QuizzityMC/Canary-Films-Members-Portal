@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 
 // Database adapter that works with both SQLite and PostgreSQL
 class Database {
@@ -231,14 +232,13 @@ class Database {
           password = adminPassword;
           hashedPassword = await bcrypt.hash(adminPassword, 10);
           console.log('\n╔═══════════════════════════════════════════════════════╗');
-          console.log('║       ADMIN ACCOUNT CREATED FROM ENV VARIABLES       ║');
+          console.log('║       ADMIN ACCOUNT CREATED                          ║');
           console.log('╠═══════════════════════════════════════════════════════╣');
           console.log(`║  Email:    ${adminEmail.padEnd(41, ' ')}║`);
-          console.log('║  Password: (from ADMIN_PASSWORD env variable)        ║');
+          console.log('║  Password: (configured via environment variable)     ║');
           console.log('╚═══════════════════════════════════════════════════════╝\n');
         } else {
           // Generate a random password for the default admin
-          const crypto = require('crypto');
           password = crypto.randomBytes(16).toString('hex');
           hashedPassword = await bcrypt.hash(password, 10);
           console.log('\n╔═══════════════════════════════════════════════════════╗');
@@ -266,11 +266,9 @@ class Database {
   // Unified query methods that work with both databases
   async run(sql, params = []) {
     if (this.dbType === 'postgres') {
-      // Convert SQLite $1, $2 style to PostgreSQL style if needed
-      const pgSql = sql.replace(/\?/g, () => {
-        const index = (sql.match(/\?/g) || []).indexOf('?') + 1;
-        return `$${index}`;
-      });
+      // Convert ? placeholders to $1, $2, etc. for PostgreSQL
+      let paramIndex = 1;
+      const pgSql = sql.replace(/\?/g, () => `$${paramIndex++}`);
       const result = await this.db.query(pgSql, params);
       return { lastID: result.rows[0]?.id, changes: result.rowCount };
     } else {
