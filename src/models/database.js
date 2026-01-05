@@ -109,6 +109,7 @@ class Database {
         console.log('╠═══════════════════════════════════════════════════════╣');
         console.log('║  ⚠️  SAVE THIS PASSWORD - IT WILL NOT BE SHOWN AGAIN  ║');
         console.log('║  ⚠️  CHANGE THIS PASSWORD IMMEDIATELY AFTER LOGIN    ║');
+        console.log('║  ⚠️  CLEAR YOUR TERMINAL/LOGS AFTER SAVING PASSWORD  ║');
         console.log('╚═══════════════════════════════════════════════════════╝\n');
       }
     } catch (err) {
