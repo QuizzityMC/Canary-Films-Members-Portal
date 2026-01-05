@@ -4,6 +4,7 @@ const http = require('http');
 const https = require('https');
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 const session = require('express-session');
 const passport = require('./config/passport');
 const bodyParser = require('body-parser');
@@ -29,14 +30,21 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 // Session configuration
-if (!process.env.SESSION_SECRET) {
-  console.error('ERROR: SESSION_SECRET environment variable must be set!');
-  console.error('Generate a random secret: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"');
-  process.exit(1);
+let sessionSecret = process.env.SESSION_SECRET;
+if (!sessionSecret) {
+  // Generate a random session secret if not provided
+  sessionSecret = crypto.randomBytes(32).toString('hex');
+  
+  console.warn('WARNING: SESSION_SECRET environment variable is not set!\n' +
+    'Using a randomly generated session secret. This means:\n' +
+    '  - Users will be logged out when the server restarts\n' +
+    '  - Sessions will not persist across multiple instances\n' +
+    'For production, set SESSION_SECRET in your environment variables.\n' +
+    'Generate a permanent secret: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"');
 }
 
 app.use(session({
-  secret: process.env.SESSION_SECRET,
+  secret: sessionSecret,
   resave: false,
   saveUninitialized: false,
   cookie: {
