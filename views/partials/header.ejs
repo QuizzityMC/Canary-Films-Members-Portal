@@ -1,0 +1,22 @@
+<header>
+  <div class="container">
+    <div class="header-content">
+      <a href="/" class="logo">🎬 Canary Films Portal</a>
+      
+      <nav>
+        <ul>
+          <% if (user) { %>
+            <li><a href="/portal">Portal</a></li>
+            <% if (user.role === 'admin') { %>
+              <li><a href="/admin">Admin</a></li>
+            <% } %>
+            <li><a href="/auth/logout">Logout</a></li>
+          <% } else { %>
+            <li><a href="/auth/login">Login</a></li>
+          <% } %>
+          <li><a href="https://www.canaryfilms.org/" class="canary-link" target="_blank">← Canary Films</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</header>

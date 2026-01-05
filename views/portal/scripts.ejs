@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scripts - Canary Films Members Portal</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include('../partials/header') %>
+  
+  <main class="container" style="padding: 2rem 20px;">
+    <h1>📖 Scripts Library</h1>
+    
+    <div class="card mt-3">
+      <% if (scripts.length > 0) { %>
+        <div class="grid grid-2">
+          <% scripts.forEach(script => { %>
+            <div class="card">
+              <h3><%= script.title %></h3>
+              <p><strong>Version:</strong> <%= script.version %></p>
+              <p><strong>Last Updated:</strong> <%= new Date(script.updated_at).toLocaleDateString() %></p>
+              <a href="/portal/scripts/<%= script.id %>" class="btn btn-primary mt-2">View Script</a>
+            </div>
+          <% }); %>
+        </div>
+      <% } else { %>
+        <p>No scripts available.</p>
+      <% } %>
+    </div>
+
+    <div class="card mt-3 text-center">
+      <a href="/portal" class="btn btn-secondary">← Back to Portal</a>
+      <a href="https://www.canaryfilms.org/" target="_blank" class="btn btn-secondary">Canary Films</a>
+    </div>
+  </main>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>

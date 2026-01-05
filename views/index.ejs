@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canary Films Members Portal</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include('partials/header') %>
+  
+  <main>
+    <section class="hero">
+      <div class="container">
+        <h1>🎬 Canary Films Members Portal</h1>
+        <p>Your central hub for shoot schedules, scripts, and production planning</p>
+        <% if (user) { %>
+          <a href="/portal" class="btn btn-primary">Go to Portal</a>
+        <% } else { %>
+          <a href="/auth/login" class="btn btn-primary">Sign In</a>
+        <% } %>
+      </div>
+    </section>
+
+    <section class="container" style="padding: 3rem 20px;">
+      <div class="grid grid-2">
+        <div class="card">
+          <h2>📅 Shoot Schedules</h2>
+          <p>Stay up-to-date with daily shoot schedules, call times, and locations. Know exactly when and where you need to be.</p>
+        </div>
+
+        <div class="card">
+          <h2>📝 Lines to Learn</h2>
+          <p>Access your lines for upcoming shoots. Practice and prepare with scene-specific dialogue assigned to you.</p>
+        </div>
+
+        <div class="card">
+          <h2>📖 Full Scripts</h2>
+          <p>View complete scripts and production versions. Track changes and stay informed about the latest revisions.</p>
+        </div>
+
+        <div class="card">
+          <h2>📁 Planning Documents</h2>
+          <p>Access production planning documents, storyboards, and other essential materials for the production.</p>
+        </div>
+      </div>
+
+      <div class="card text-center mt-4">
+        <h2>About Canary Films</h2>
+        <p>Canary Films is a creative film studio dedicated to bringing stories to life. This portal is designed to streamline our production process and keep our team connected.</p>
+        <a href="https://www.canaryfilms.org/" target="_blank" class="btn btn-secondary mt-2">Learn More About Canary Films</a>
+      </div>
+    </section>
+  </main>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

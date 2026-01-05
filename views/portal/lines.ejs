@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lines to Learn - Canary Films Members Portal</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include('../partials/header') %>
+  
+  <main class="container" style="padding: 2rem 20px;">
+    <h1>📝 Your Lines to Learn</h1>
+    
+    <div class="card mt-3">
+      <% if (lines.length > 0) { %>
+        <% lines.forEach(line => { %>
+          <div class="card">
+            <h3>Shoot: <%= new Date(line.date).toLocaleDateString() %> at <%= line.time %></h3>
+            <% if (line.scene_number) { %>
+              <p><strong>Scene:</strong> <%= line.scene_number %></p>
+            <% } %>
+            <% if (line.location) { %>
+              <p><strong>Location:</strong> <%= line.location %></p>
+            <% } %>
+            <div style="background-color: #fafafa; padding: 1rem; border-radius: 5px; margin-top: 1rem;">
+              <strong>Lines:</strong>
+              <pre style="white-space: pre-wrap; margin-top: 0.5rem;"><%= line.lines %></pre>
+            </div>
+            <% if (line.notes) { %>
+              <p style="margin-top: 1rem;"><strong>Notes:</strong> <%= line.notes %></p>
+            <% } %>
+          </div>
+        <% }); %>
+      <% } else { %>
+        <p>No lines assigned for upcoming shoots.</p>
+      <% } %>
+    </div>
+
+    <div class="card mt-3 text-center">
+      <a href="/portal" class="btn btn-secondary">← Back to Portal</a>
+      <a href="https://www.canaryfilms.org/" target="_blank" class="btn btn-secondary">Canary Films</a>
+    </div>
+  </main>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>

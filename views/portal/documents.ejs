@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planning Documents - Canary Films Members Portal</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include('../partials/header') %>
+  
+  <main class="container" style="padding: 2rem 20px;">
+    <h1>📁 Planning Documents</h1>
+    
+    <div class="card mt-3">
+      <% if (documents.length > 0) { %>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Description</th>
+              <th>Category</th>
+              <th>Uploaded By</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% documents.forEach(doc => { %>
+              <tr>
+                <td><strong><%= doc.title %></strong></td>
+                <td><%= doc.description || 'N/A' %></td>
+                <td><span class="badge"><%= doc.category %></span></td>
+                <td><%= doc.uploaded_by_name || 'System' %></td>
+                <td><%= new Date(doc.created_at).toLocaleDateString() %></td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      <% } else { %>
+        <p>No planning documents available.</p>
+      <% } %>
+    </div>
+
+    <div class="card mt-3 text-center">
+      <a href="/portal" class="btn btn-secondary">← Back to Portal</a>
+      <a href="https://www.canaryfilms.org/" target="_blank" class="btn btn-secondary">Canary Films</a>
+    </div>
+  </main>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>
