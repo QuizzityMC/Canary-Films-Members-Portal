@@ -61,7 +61,8 @@ HTTPS_PORT=9812
 # Database path
 DB_PATH=./data/portal.db
 
-# Generate a secure session secret
+# Generate a secure session secret (REQUIRED)
+# Run: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 SESSION_SECRET=your-very-secure-random-string-here
 
 # Hack Club OAuth (get from https://hackclub.com/api after enabling developer mode)
@@ -235,14 +236,26 @@ Visit your portal:
 
 ## Default Admin Account
 
-On first run, a default admin account is created:
+On first run, a default admin account is created with a **randomly generated password**.
+
+The credentials will be displayed in the console during first startup:
 
 ```
-Email: admin@canaryfilms.org
-Password: admin123
+╔═══════════════════════════════════════════════════════╗
+║       DEFAULT ADMIN ACCOUNT CREATED                  ║
+╠═══════════════════════════════════════════════════════╣
+║  Email:    admin@canaryfilms.org                     ║
+║  Password: [random 32-character hex string]          ║
+╠═══════════════════════════════════════════════════════╣
+║  ⚠️  SAVE THIS PASSWORD - IT WILL NOT BE SHOWN AGAIN  ║
+║  ⚠️  CHANGE THIS PASSWORD IMMEDIATELY AFTER LOGIN    ║
+╚═══════════════════════════════════════════════════════╝
 ```
 
-**IMPORTANT:** Change this password immediately after first login!
+**IMPORTANT:** 
+- Save the password immediately - it's only shown once
+- Change the password after first login
+- If you lose the password, delete the database and restart to generate a new one
 
 ## Optional: Nginx Reverse Proxy
 

@@ -58,12 +58,17 @@ The portal will be available at:
 
 ### Default Admin Account
 
+On first run, a default admin account is created with a **randomly generated password**:
+
 ```
 Email: admin@canaryfilms.org
-Password: admin123
+Password: (displayed in console on first startup)
 ```
 
-**⚠️ Change this password immediately after first login!**
+**⚠️ IMPORTANT:** 
+- Save the password shown in the console during first startup
+- It will NOT be shown again
+- Change this password immediately after first login
 
 ## 📚 Documentation
 

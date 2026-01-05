@@ -93,12 +93,23 @@ class Database {
     try {
       const adminExists = await this.get('SELECT id FROM users WHERE role = ?', ['admin']);
       if (!adminExists) {
-        const hashedPassword = await bcrypt.hash('admin123', 10);
+        // Generate a random password for the default admin
+        const crypto = require('crypto');
+        const randomPassword = crypto.randomBytes(16).toString('hex');
+        const hashedPassword = await bcrypt.hash(randomPassword, 10);
         await this.run(
           'INSERT INTO users (email, password_hash, name, role, is_approved) VALUES (?, ?, ?, ?, ?)',
           ['admin@canaryfilms.org', hashedPassword, 'Admin', 'admin', 1]
         );
-        console.log('Default admin created: admin@canaryfilms.org / admin123');
+        console.log('\n╔═══════════════════════════════════════════════════════╗');
+        console.log('║       DEFAULT ADMIN ACCOUNT CREATED                  ║');
+        console.log('╠═══════════════════════════════════════════════════════╣');
+        console.log('║  Email:    admin@canaryfilms.org                     ║');
+        console.log(`║  Password: ${randomPassword.padEnd(41, ' ')}║`);
+        console.log('╠═══════════════════════════════════════════════════════╣');
+        console.log('║  ⚠️  SAVE THIS PASSWORD - IT WILL NOT BE SHOWN AGAIN  ║');
+        console.log('║  ⚠️  CHANGE THIS PASSWORD IMMEDIATELY AFTER LOGIN    ║');
+        console.log('╚═══════════════════════════════════════════════════════╝\n');
       }
     } catch (err) {
       console.error('Error creating default admin:', err);

@@ -25,8 +25,14 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 // Session configuration
+if (!process.env.SESSION_SECRET) {
+  console.error('ERROR: SESSION_SECRET environment variable must be set!');
+  console.error('Generate a random secret: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"');
+  process.exit(1);
+}
+
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'canary-films-secret-key',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   cookie: {

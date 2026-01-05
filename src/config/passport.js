@@ -85,10 +85,12 @@ if (process.env.HACKCLUB_CLIENT_ID && process.env.HACKCLUB_CLIENT_SECRET) {
 
         if (!user) {
           // Check if user needs to be pre-created by admin
+          console.log(`[AUTH] Failed Hack Club login attempt for user ID: ${hackclubUser.id} - Account not found`);
           return done(null, false, { message: 'Account must be created by admin first' });
         }
 
         if (!user.is_approved) {
+          console.log(`[AUTH] Failed Hack Club login attempt for user: ${user.email} - Account not approved`);
           return done(null, false, { message: 'Account not approved by admin' });
         }
 
@@ -121,6 +123,7 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
           user = await db.get('SELECT * FROM users WHERE email = ?', [profile.emails[0].value]);
           
           if (!user) {
+            console.log(`[AUTH] Failed Google login attempt for email: ${profile.emails[0].value} - Account not found`);
             return done(null, false, { message: 'Account must be created by admin first' });
           }
 
@@ -129,6 +132,7 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
         }
 
         if (!user.is_approved) {
+          console.log(`[AUTH] Failed Google login attempt for user: ${user.email} - Account not approved`);
           return done(null, false, { message: 'Account not approved by admin' });
         }
 
