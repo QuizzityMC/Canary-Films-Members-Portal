@@ -13,15 +13,12 @@ class Database {
       console.log('Using PostgreSQL database');
       return this.initPostgres();
     } else {
-      // On Vercel, DATABASE_URL is required - SQLite won't work
+      // On Vercel without DATABASE_URL, use /tmp (ephemeral storage)
       if (process.env.VERCEL) {
-        throw new Error(
-          `DATABASE_URL environment variable is required for Vercel deployment.
-SQLite is not supported on Vercel due to read-only filesystem.
-Please set up a PostgreSQL database (Vercel Postgres, Neon, or Supabase)
-and add the DATABASE_URL to your environment variables.
-See VERCEL_DEPLOYMENT.md for detailed instructions.`
-        );
+        console.warn('⚠️  WARNING: Using SQLite in /tmp directory on Vercel');
+        console.warn('⚠️  Data will NOT persist across deployments or function restarts');
+        console.warn('⚠️  For production, set up PostgreSQL and configure DATABASE_URL');
+        console.warn('⚠️  See VERCEL_DEPLOYMENT.md for instructions');
       }
       console.log('Using SQLite database');
       return this.initSQLite();
@@ -59,7 +56,14 @@ See VERCEL_DEPLOYMENT.md for detailed instructions.`
     const fs = require('fs');
     
     this.dbType = 'sqlite';
-    const dbPath = process.env.DB_PATH || path.join(__dirname, '../../data/portal.db');
+    
+    // Use /tmp directory on Vercel (ephemeral), otherwise use data directory
+    let dbPath;
+    if (process.env.VERCEL && !process.env.DB_PATH) {
+      dbPath = '/tmp/portal.db';
+    } else {
+      dbPath = process.env.DB_PATH || path.join(__dirname, '../../data/portal.db');
+    }
     
     // Create data directory if it doesn't exist
     const dataDir = path.dirname(dbPath);
